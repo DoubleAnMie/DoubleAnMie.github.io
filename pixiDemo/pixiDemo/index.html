@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实验3 20软工2班 刘体琨</title>
+	<style>
+	html,body{
+		width :100%;
+		height: 100%;
+		margin : 0;
+		padding: 0;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		
+		
+	}
+ 	#bg{
+		width: 100%;
+		height: 100%;
+		min-width: 500px;
+		z-index: -10;
+		zoom: 1;
+		background-image:url("res/main.jpg") ;
+		background-repeat: no-repeat;
+		background-size:cover;
+		background-position:center;
+	}
+	#app{
+		height: 800px;
+		width: 480px;
+		/* background-color: aqua; */
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform:translate(-50%,-50%);
+	}
+	/* canvas{
+		position: absolute;
+	} */
+	</style>
+</head>
+<body>
+	<div id ="bg"</div>
+	<div id='app'></div>
+    <script src="js/pixi.min.js"></script>
+    <script>
+		var appdiv = document.querySelector("#app");
+		var app = new PIXI.Application(480,800);
+        appdiv.appendChild(app.view);
+        
+		var bg = new PIXI.Sprite.fromImage("res/bg.jpg");
+		app.stage.addChild(bg);
+		
+		var score = new PIXI.Text("0");
+		var good = new PIXI.Text("GOOD!");
+		var miss = new PIXI.Text("MISS!");
+		var money = new PIXI.Sprite.fromImage("res/money.png");
+		create_money();
+	
+		app.stage.addChild(miss);
+		miss.x = 200;
+		miss.y = 400;
+		miss.visible = false;
+		app.stage.addChild(good);
+		good.x = 200;
+		good.y = 400;
+		good.visible = false;
+		app.stage.addChild(score);
+		score.x =400;
+		score.y =30;
+		
+		var count = 0;
+		
+		
+		var check1 = new PIXI.Sprite.fromImage("res/check.png");
+		app.stage.addChild(check1);
+		check1.x = 240;
+		check1.y = 700;
+		check1.anchor.x = 0.5;
+		check1.anchor.y = 0.5;
+		
+		var check2 = new PIXI.Sprite.fromImage("res/check.png");
+		app.stage.addChild(check2);
+		check2.x = 80;
+		check2.y = 600;
+		check2.anchor.x = 0.5;
+		check2.anchor.y = 0.5;
+		
+		var check3 = new PIXI.Sprite.fromImage("res/check.png");
+		app.stage.addChild(check3);
+		check3.x = 400;
+		check3.y = 600;
+		check3.anchor.x = 0.5;
+		check3.anchor.y = 0.5;
+		var choose = 1;
+		var ismiss= false;
+		app.ticker.add(animate);
+		function close_miss(){
+			ismiss = false;
+		}
+		function miss_disision(){
+			if(ismiss){
+				miss.visible = true;
+				good.visible = false;
+			}	
+			else
+				miss.visible = false;
+		}
+	
+		function random_choose(){
+			var a = Math.round(Math.random()*2 +1);
+			return a;
+		}
+		function animate(){
+			if(choose == 1){
+				money.y +=2;
+		
+				if(money.y >=800){
+					money.y = 30;
+					ismiss = true;
+					choose = random_choose();
+				}
+			}
+			else if (choose == 2){
+				money.y +=2;
+				money.x +=0.55;
+				if(money.y >=800){
+					money.y = 30;
+					money.x = 240;
+					ismiss = true;
+					choose = random_choose();
+				}
+				
+			}
+			else if(choose == 3){
+				money.y +=2;
+				money.x -=0.55;
+				if(money.y >=800){
+					money.y = 30;
+					money.x = 240;
+					ismiss = true;
+					choose = random_choose();
+				}
+			}
+			miss_disision();
+		}
+		function create_money(){
+			app.stage.addChild(money);
+			money.x = 240;
+			money.y = 30;
+			money.anchor.x =0.5;
+			money.anchor.y =0.5;
+			money.scale.x = 0.2;
+			money.scale.y =0.2;
+		}
+		
+		function hit1(){
+
+			if(money.x==240&&money.y>=650&&money.y<=750){
+				count += 1;
+				score.text = count;
+				ismiss = false;
+				good.visible = true;
+				money.y = 30;
+				choose = random_choose();
+			}	
+		}
+		function hit2(){
+			
+			if(money.x>=65&&money.x<=95&&money.y>=550&&money.y<=650){
+				count += 1;
+				score.text = count;
+				ismiss = false;
+				good.visible = true;
+				money.y = 30;
+				money.x = 240;
+				choose = random_choose();
+			}	
+		}
+		function hit3(){
+			if(money.x>=380&&money.x<=420&&money.y>=550&&money.y<=650){
+				count += 1;
+				score.text = count;
+				ismiss = false;
+				good.visible = true;
+				money.y = 30;
+				money.x = 240;
+				choose = random_choose();
+			}	
+		}
+		check1.interactive = true;
+		check1.on("click",hit1);
+		check2.interactive = true;
+		check2.on("click",hit2);
+		check3.interactive = true;
+		check3.on("click",hit3);
+		
+    </script>
+</body>
+</html>
